@@ -21,7 +21,7 @@ def pose_sub(datax,datay,num):
     for i in range(lenx):
     #看是什么数据类型
         #dis = ed((datax[i]),(datay[i]))
-        dis = ((float(datax[i]) - float(datay[i]))**2)*100
+        dis = ((float(datax[i]) - float(datay[i]))**2)
         sum = sum + dis
     return np.sqrt(sum)/num
 
@@ -30,6 +30,8 @@ def pose_score(dis):
     score = sim*100
     return score
 def realize_dtw(x,y):
+
+    lam = 1/4
     maxn = np.inf
     Num_col = x.shape[1]
     lenx = x.shape[0]+1
@@ -57,15 +59,37 @@ def realize_dtw(x,y):
     print(dist[lenx-1][leny-1])
     #print(pose_score(dist[lenx-1][leny-1]))
 
-    for i in range(lenx):
-        for j in range(leny):
-            print(dist[i][j], end='|')
-        print()
 
     for i in range(1,lenx):
         dist[i][0] = 0
     for i in range(1,leny):
         dist[0][i] = 0
+
+    rx = int(lam * lenx)
+    ry = int(lam * leny)
+    k = (leny*1.0)/(lenx*1.0)
+    end_rx = lenx - rx
+    end_ry = leny - ry
+
+#全局约束
+    for i in range(end_rx):
+        start = int(k * i + ry)
+        for j in range(start, leny):
+            dist[i][j] = 0
+
+    for i in range(rx, lenx):
+        end = int(k * i - ry)
+        if end < 0:
+            end = 0
+        for j in range(end):
+            dist[i][j] = 0
+
+    for i in range(lenx):
+        for j in range(leny):
+            print(dist[i][j], end='|')
+        print()
+
+
     path1 = []
     path2 = []
 
@@ -73,11 +97,12 @@ def realize_dtw(x,y):
     b = leny-1
     #print(dist[lenx-1][leny-1])
     cnt = 0
+
     while(a > 0 and b > 0):
         cnt = cnt+1
         pose_sum = pose_sum + dist[a][b]
-        print(a-1,end='|')
-        print(b-1)
+        #print(a-1,end='|')
+        #print(b-1)
         path1.append(a-1)
         path2.append(b-1)
         if a == 1:
