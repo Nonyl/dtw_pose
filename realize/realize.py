@@ -23,6 +23,7 @@ def pose_sub(datax,datay,num):
         #dis = ed((datax[i]),(datay[i]))
         dis = ((float(datax[i]) - float(datay[i]))**2)
         sum = sum + dis
+    #print(sum)
     return np.sqrt(sum)/num
 
 def pose_score(dis):
@@ -54,6 +55,7 @@ def realize_dtw(x,y):
             #print(x.iloc[i])
             tmp = pose_sub(x.iloc[i-1],y.iloc[j-1],Num_col)
             #print(pose_score(tmp))
+            #dist[i][j] = tmp + min(dist[i - 1][j], dist[i - 1][j - 1], dist[i][j - 1])
             dist[i][j] = pose_score(tmp)
     pose_sum = 0
     print(dist[lenx-1][leny-1])
@@ -70,7 +72,7 @@ def realize_dtw(x,y):
     k = (leny*1.0)/(lenx*1.0)
     end_rx = lenx - rx
     end_ry = leny - ry
-
+    '''
 #全局约束
     for i in range(end_rx):
         start = int(k * i + ry)
@@ -83,7 +85,7 @@ def realize_dtw(x,y):
             end = 0
         for j in range(end):
             dist[i][j] = 0
-
+'''
     for i in range(lenx):
         for j in range(leny):
             print(dist[i][j], end='|')
@@ -98,9 +100,13 @@ def realize_dtw(x,y):
     #print(dist[lenx-1][leny-1])
     cnt = 0
 
+    redun = -1
+    cnt_redun = 0
     while(a > 0 and b > 0):
         cnt = cnt+1
         pose_sum = pose_sum + dist[a][b]
+        redun = abs(b-a)/(lenx/2)
+        cnt_redun = cnt_redun + (redun)
         #print(a-1,end='|')
         #print(b-1)
         path1.append(a-1)
@@ -121,7 +127,10 @@ def realize_dtw(x,y):
             b = b-1
     dist1 = dist[1:,1:]
     print('cnt:',cnt)
-    print('pose_sum:',pose_sum/(cnt))
+    print('cnt_redun:', cnt_redun)
+
+    cnt_redun = int(cnt_redun)
+    print('pose_sum:',pose_sum/(cnt+cnt_redun))
     print('nice')
     plt.imshow(dist1.T, origin='lower', cmap='gray', interpolation='nearest')#T是矩阵转置的意思
     plt.plot(path1, path2)

@@ -53,7 +53,7 @@ def Coordinate_Neck(data):
         # new_data.append(to_(array))
         # print(data.columns[i])
         # print(new_data)
-        print('i:', i)
+        #print('i:', i)
         new_data[data.columns[i]] = to_(array)
 
     for i in range(data_row):
@@ -89,8 +89,8 @@ def center_gravity(data):
     # 写那个手重心 （3-9）
     df_rhand = pd.DataFrame({'Rhand': [[1.1, 2.1], [3.1, 4.1]]})
     df_lhand = pd.DataFrame({'Lhand': [[1.1, 2.1], [3.1, 4.1]]})
-    q = 1 / 8
-
+    q = 1 / 4
+    #应该是1/4而不是1/9
     for i in range(data_row):
         array = new_data.iloc[i]
         x_rwrist = array['RWrist'][0]
@@ -119,6 +119,8 @@ def center_gravity(data):
 
         df_rhand.loc[i] = [list_rhand]
         df_lhand.loc[i] = [list_lhand]
+        #print(df_rhand.loc[i])
+        #time.sleep(5)
         # df_rhand.loc[len(df_rhand)] = list_rhand
         # df_lhand.loc[len(df_lhand)] = list_lhand
 
@@ -138,7 +140,7 @@ def center_gravity(data):
             # print('name:', name_col)
             k = dict[name_col]
             x_gravity = x_gravity + k * new_data.iloc[i][name_col][0]
-            y_gravity = x_gravity + k * new_data.iloc[i][name_col][1]
+            y_gravity = y_gravity + k * new_data.iloc[i][name_col][1]
         list_gravity = list([x_gravity, y_gravity])
         x_MidHip = new_data.iloc[i]['MidHip'][0]
         y_MidHip = new_data.iloc[i]['MidHip'][1]
@@ -153,7 +155,7 @@ def center_gravity(data):
     #print(df_angle)
     new_data['gravity'] = df_gravity
     new_data['gravity_angle'] = df_angle
-    #print(new_data)
+    print(df_gravity)
     return new_data['gravity_angle']
 
 
@@ -310,8 +312,8 @@ def body_orient(data):
             o2 = 0.5 * math.pi
         # 人体左右朝向,是否要+pi
         f0 = [
-            (tmp[22][1] - tmp[24][1]) + (tmp[19][1] - tmp[21][1]),
-            (tmp[22][0] - tmp[24][0]) + (tmp[19][0] - tmp[21][0])
+            (tmp[22][0] - tmp[24][0]) + (tmp[19][0] - tmp[21][0]),
+            (tmp[22][1] - tmp[24][1]) + (tmp[19][1] - tmp[21][1])
         ]
         o3 = np.arctan2(f0[0], f0[1]) + math.pi
         '''

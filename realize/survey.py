@@ -25,7 +25,8 @@ def survey_data(x,y):
 def data_amplification(data):
     col = data.shape[0]
 
-    df_1 = data['angle01']
+    df_1 = data['gravity_angle']
+    '''
     df_2 = data['angle02']
     df_3 = data['angle03']
     df_4 = data['angle04']
@@ -39,9 +40,10 @@ def data_amplification(data):
     df_12 = data['angle12']
     df_13 = data['angle13']
     #df_1 = data['limb_angle01']
-
+'''
     for i in range(col):
-        df_1[i] = df_1[i] * 3
+        df_1[i] = df_1[i] * 100
+        '''
         df_2[i] = df_2[i] * 3
         df_3[i] = df_3[i] * 3
         df_4[i] = df_4[i] * 3
@@ -68,12 +70,12 @@ def data_amplification(data):
     data['angle11'] = df_11
     data['angle12'] = df_12
     data['angle13'] = df_13
-
-
+'''
+    data['gravity_angle'] = df_1
     return data
 
 if __name__ == '__main__':
 
-    data = pd.read_csv('E:/学习/python/python code/dtw_pose/data/data_stand.csv')
+    data = pd.read_csv('E:/学习/python/python code/dtw_pose/data/data_after_output2.csv')
     data = data_amplification(data)
-    data.to_csv('E:/学习/python/python code/dtw_pose/data/data_amp_stand.csv', index=None)
+    data.to_csv('E:/学习/python/python code/dtw_pose/data/data_amp_after_output2.csv', index=None)
